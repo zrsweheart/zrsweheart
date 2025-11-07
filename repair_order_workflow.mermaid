@@ -1,0 +1,45 @@
+graph TD
+    Start([报修单管理<br/>已设计完成]) --> CreateOrder[点击创建用工订单]
+    
+    CreateOrder --> OrderCreate[用工订单创建与审核]
+    OrderCreate --> Step1[1. 服务团队人员创建用工订单]
+    Step1 --> Step2[2. 选择派发类型<br/>内部/外部/都选]
+    Step2 --> Step3[3. 提交审核<br/>状态: 待审核]
+    
+    Step3 --> Review1[客户经理审核<br/>一级审核]
+    Review1 --> Review2[直属主管审核<br/>二级审核]
+    
+    Review2 --> AutoGenerate[4. 审核通过自动生成工单<br/>用工订单状态: 待处理]
+    
+    AutoGenerate --> Internal{内部工单<br/>如已勾选}
+    AutoGenerate --> External{外部工单<br/>如已勾选}
+    
+    Internal --> InternalEngineer[内部工程师<br/>小程序接单<br/>上门施工]
+    
+    External --> Dispatcher[调度员创建<br/>多个服务工单]
+    Dispatcher --> ExternalWorker[外部师傅<br/>执行服务工单<br/>每个工单单独走<br/>完工确认和质检流程]
+    
+    InternalEngineer --> InternalQC[质量经理质检<br/>待质检]
+    ExternalWorker --> ExternalQC[每个服务工单<br/>单独质检]
+    
+    InternalQC --> AllComplete[所有工单均达到<br/>客户待验收状态<br/>内部+外部]
+    ExternalQC --> AllComplete
+    
+    AllComplete --> OrderStatus[用工订单状态更新为<br/>客户待验收]
+    OrderStatus --> RepairStatus[报修单状态更新为<br/>待发起客户验收]
+    
+    RepairStatus --> InitiateAcceptance[服务团队点击<br/>发起客户验收]
+    InitiateAcceptance --> CustomerAcceptance{客户端进行验收}
+    
+    CustomerAcceptance -->|验收通过| CostConfirm[费用确认]
+    CustomerAcceptance -->|验收不通过| Rework[选择问题订单<br/>用工/商品<br/>重新处理或派单]
+    
+    CostConfirm --> End([完成])
+    
+    style Start fill:#90EE90
+    style End fill:#90EE90
+    style CreateOrder fill:#87CEEB
+    style AutoGenerate fill:#FFD700
+    style CustomerAcceptance fill:#FF6B6B
+    style CostConfirm fill:#98FB98
+    style Rework fill:#FFA07A
